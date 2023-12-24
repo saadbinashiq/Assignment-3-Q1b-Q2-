@@ -1,5 +1,5 @@
 # Assignment-3-Q1b-Q2-
-                                                                                                       QUESTION 1 PART B "CODE"
+QUESTION 1 PART B "CODE"
 #include <iostream>
 #include <string>
 using namespace std;
@@ -48,8 +48,7 @@ int main()
     return 0;
 }
 
-
-                                                                                                       QUESTION 2 "CODE"
+QUESTION 2 "CODE"
 #include <iostream>
 #include <string>
 using namespace std;
