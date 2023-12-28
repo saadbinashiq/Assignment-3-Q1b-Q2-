@@ -3,130 +3,152 @@
 #include <iostream>
 #include <string>
 using namespace std;
-class Car
+
+class Vehicle 
 {
-public:
-    virtual void displayInfo() const = 0;
-    virtual ~Car() {}
+  public:
+    virtual void showDetails() const = 0;
+    virtual ~Vehicle() {}
 };
-class Sedan : public Car
-{
-private:
-    string make;
-    string model;
-public:
-    Sedan(const string& make, const string& model) : make(make), model(model) {}
-    void displayInfo() const
-    {
-        cout << "Sedan: " << make << " " << model << endl;
-    }
-};
-class SUV : public Car
-{
-private:
-    string make;
+
+class CompactCar : public Vehicle 
+{ 
+  private:
+    string brand;
     string model;
 
-public:
-    SUV(const string& make, const string& model) : make(make), model(model) {}
-    void displayInfo() const
+  public:
+    CompactCar(const string& brand, const string& model) : brand(brand), model(model) {}
+    void showDetails() const 
     {
-        cout << "SUV: " << make << " " << model << endl;
+        cout << "Compact Car: " << brand << " " << model << endl;
     }
 };
-void displayCarInfo(const Car& car)
+
+class Crossover : public Vehicle 
 {
-    car.displayInfo();
+  private:
+    string brand;
+    string model;
+  public:
+    Crossover(const string& brand, const string& model) : brand(brand), model(model) {}
+    void showDetails() const
+    {
+        cout << "Crossover: " << brand << " " << model << endl;
+    }
+};
+
+void displayVehicleInfo(const Vehicle& vehicle)
+{
+    vehicle.showDetails();
 }
 
-int main()
+int main() 
 {
-    Sedan sedan("Toyota", "Grande");
-    SUV suv("Ford", "Explorer");
-    displayCarInfo(sedan);
-    displayCarInfo(suv);
+    CompactCar compact("Honda", "Civic");
+    Crossover crossover("Haval", "H6");
+    displayVehicleInfo(compact);
+    displayVehicleInfo(crossover);
     return 0;
 }
+
 
     QUESTION 2 "CODE"
 #include <iostream>
 #include <string>
 using namespace std;
-class Product 
+
+class ProductItem
 {
- public:
-    Product() : productId(0), productName("Unknown"), price(0.0) {}
-    int productId;
-    string productName;
-    double price;
-     Product(int id, const string& name, double p) : productId(id), productName(name), price(p) {}
-    void displayProductDetails()
+  private:
+    int itemCode;
+    string itemName;
+  public:
+    double cost;
+    ProductItem() : itemCode(0), itemName("Unknown"), cost(0.0) {}
+    ProductItem(int code, const string& name, double price) : itemCode(code), itemName(name), cost(price) {}
+    void displayProductItemDetails()
     {
-        cout << "Product ID: " << productId << ", Name: " << productName << ", Price: $" << price << endl;
+        cout << "Item Code: " << itemCode << ", Name: " << itemName << ", Cost: $" << cost << endl;
     }
 };
- class ShoppingCart 
- {
-   private:
+
+class ShoppingBasket
+{
+  private:
     static const int maxCapacity = 5;
-    Product products[maxCapacity];
-    int size;
-    double totalCost;
-   public:
-    ShoppingCart() : size(0), totalCost(0.0) {}
-     void addProduct(const Product& product) 
-     {
-        if (size < maxCapacity)
-        {
-            products[size++] = product;
-            totalCost += product.price;
-        }
-        else 
-        {
-            cout << "Shopping Cart is full. Cannot add more products." << endl;
-        }
-     }
-         void displayAllProducts() 
-         {
-           for (int i = 0; i < size; ++i)
-           {
-             products[i].displayProductDetails();
-           }
-         }
-             double calculateTotalCost() 
-             {
-                return totalCost;
-             }
-};
- class User 
- {
-   public:
-    int userId;
-    ShoppingCart* cart;  // Aggregation - pointer to ShoppingCart
-        User(int id) : userId(id), cart(nullptr) {}
-
-    void displayUserDetails() 
+    ProductItem items[maxCapacity];
+    int itemCount;
+    double totalAmount;
+  public:
+    ShoppingBasket() : itemCount(0), totalAmount(0.0) {}
+    void addItemToBasket(const ProductItem& item)
     {
-        cout << "User ID: " << userId << endl;
+        if (itemCount < maxCapacity)
+        {
+            items[itemCount++] = item;
+            totalAmount += item.cost;
+        }
+        else
+        {
+            cout << "Shopping Basket is full. Cannot add more items." << endl;
+        }
+    }
+
+void displayAllItems() 
+    {
+        for (int i = 0; i < itemCount; ++i)
+        {
+            items[i].displayProductItemDetails();
+        }
+    }
+    double calculateTotalAmount() 
+    {
+        return totalAmount;
     }
 };
 
-int main()
+class Customer
 {
-    // Demonstrating Composition
-    ShoppingCart cart;
-    Product p1(1, "washing machine", 10.99);
-    Product p2(2, "refrigerator", 5.99);
-    cart.addProduct(p1);
-    cart.addProduct(p2);
-    cout << "All Products in Cart:" << endl;
-    cart.displayAllProducts();
-    cout << "Total Cost: $" << cart.calculateTotalCost() << endl;
-    // Demonstrating Association
-    User user1(101);
-    user1.cart = &cart;  // Assigning the address of cart to the pointer in User
-    user1.displayUserDetails();
-    cout << "User's Cart Details:" << endl;
-    user1.cart->displayAllProducts();  // Accessing the ShoppingCart through the pointer
+  public:
+    int customerID;
+    Customer(int id) : customerID(id) {}
+    void displayCustomerDetails() 
+    {
+        cout << "Customer ID: " << customerID << endl;
+    }
+};
+
+class Order
+{
+  public:
+    Customer* customer;
+    ShoppingBasket* basket;
+    Order(Customer* cust, ShoppingBasket* basket) : customer(cust), basket(basket) {}
+    void displayOrderDetails() 
+    {
+        cout << "Order Details:" << endl;
+        customer->displayCustomerDetails();
+        cout << "Items in Basket:" << endl;
+        basket->displayAllItems();
+        cout << "Total Amount: $" << basket->calculateTotalAmount() << endl;
+    }
+};
+int main() 
+{
+    ShoppingBasket basket;
+    ProductItem item1(1, "Smartwatch", 149.99);
+    ProductItem item2(2, "Bluetooth Earbuds", 39.99);
+    basket.addItemToBasket(item1);
+    basket.addItemToBasket(item2);
+    cout << "All Items in Basket:" << endl;
+    basket.displayAllItems();
+    cout << "Total Amount: $" << basket.calculateTotalAmount() << endl;
+
+  Customer customer1(201);
+  customer1.displayCustomerDetails();
+
+  Order order(&customer1, &basket);
+    order.displayOrderDetails();
     return 0;
 }
